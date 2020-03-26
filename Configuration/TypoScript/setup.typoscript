@@ -16,6 +16,11 @@ plugin.tx_rmndhybridauth {
             1 = {$plugin.tx_rmndhybridauth.view.layoutRootPath}
         }
     }
+
+    features {
+        skipDefaultArguments = 1
+        requireCHashArgumentForActionArguments = 0
+    }
 }
 
 
@@ -32,21 +37,19 @@ RmndHybridauthConnect {
         xhtml_cleaning = 0
         admPanel = 0
         debug = 0
-        no_cache = 1
+        no_cache = 0
     }
 
-
-    10 = USER_INT
+    10 = USER
     10 {
         userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
         extensionName = RmndHybridauth
         pluginName = Login
         vendorName = Remind
         controller = Login
-        action = Form
         switchableControllerActions {
-            Selenium {
-                1 = auth
+            Login {
+                0 = auth
             }
         }
     }

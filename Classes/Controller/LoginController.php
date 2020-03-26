@@ -3,11 +3,14 @@
 namespace Remind\RmndHybridauth\Controller;
 
 use Remind\RmndHybridauth\Login\ProviderSettings;
+use Remind\RmndHybridauth\Login\ProviderSettingsLoader;
+use Remind\RmndHybridauth\Utility\HybridauthConnecter;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * @author Marco Wegner <m.wegner@remind.de>
  */
-class LoginController extends \TYPO3\CMS\Extbase\Mvc\Controller\AbstractController
+class LoginController extends ActionController
 {
     /**
      * Action argument with selected provider
@@ -30,11 +33,17 @@ class LoginController extends \TYPO3\CMS\Extbase\Mvc\Controller\AbstractControll
         $providerSettings = $this->getProviderSettings();
 
         if($providerSettings === null) {
-            $this->forward('noProviderErrorAction');
+            $this->forward('noProviderError');
         }
 
-        $hybridauthConnecter = new \Remind\RmndHybridauth\Utility\HybridauthConnecter();
-        $hybridauthConnecter->connect($providerSettings);
+        $this->uriBuilder->setAddQueryString(true);
+        $this->uriBuilder->setCreateAbsoluteUri(true);
+        $this->uriBuilder->setTargetPageType($GLOBALS['TSFE']->type);
+        $this->uriBuilder->setUseCacheHash(false);
+        $callback = $this->uriBuilder->uriFor('auth', $this->request->getArguments());
+
+        $hybridauthConnecter = new HybridauthConnecter();
+        $adapter = $hybridauthConnecter->connect($providerSettings, $callback);
     }
 
     /**
@@ -53,17 +62,17 @@ class LoginController extends \TYPO3\CMS\Extbase\Mvc\Controller\AbstractControll
     protected function getProviderSettings(): ?ProviderSettings
     {
 
-        if(!$this->arguments->hasArgument(self::ARGUMENT_PROVIDER)) {
+        if(!$this->request->hasArgument(self::ARGUMENT_PROVIDER)) {
             return null;
         }
 
-        $argumentProvider = $this->arguments->getArgument(self::ARGUMENT_PROVIDER);
+        $argumentProvider = $this->request->getArgument(self::ARGUMENT_PROVIDER);
 
         if(!\is_string($argumentProvider) || empty($argumentProvider)) {
             return null;
         }
 
-        $provider = \Remind\RmndHybridauth\Login\ProviderSettingsLoader::getSingleProviderSettings($argumentProvider, $this->settings, self::SETTINGS_PROVIDERS);
+        $provider = ProviderSettingsLoader::getSingleProviderSettings($argumentProvider, $this->settings, self::SETTINGS_PROVIDERS);
 
         /* Return null if provider is not active */
         if(!$provider->getIsActive()) {

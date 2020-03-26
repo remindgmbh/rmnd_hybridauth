@@ -6,7 +6,7 @@ defined('TYPO3_MODE') || die();
  ******************************************************************************/
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Remind.Hybridauth',
+    'Remind.RmndHybridauth',
     'Login',
     'LLL:EXT:rmnd_hybridauth/Resources/Private/Language/locallang_db.xlf:plugins.login.title'
 );

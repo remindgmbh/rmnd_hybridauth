@@ -16,14 +16,16 @@ class HybridauthConnecter
     /**
      *
      * @param ProviderSettings $providerSettings
+     * @param string $callback
      * @return array
      */
 
-    public function connect(ProviderSettings $providerSettings): ?AdapterInterface
+    public function connect(ProviderSettings $providerSettings, string $callback): ?AdapterInterface
     {
         $providerIdentifier = $providerSettings->getHybridauthIdentifier();
         $providerConfig = $providerSettings->getHybridauthConfiguration();
-        $providerConfig['active'] = true;
+        $providerConfig['enabled'] = true;
+        $providerConfig['callback'] = $callback;
 
         $config = [
             'providers' => [
@@ -33,11 +35,7 @@ class HybridauthConnecter
 
         $hybridauth = new Hybridauth( $config );
 
-        try {
-            $adapter = $hybridauth->authenticate($providerIdentifier);
-        } catch (Exception $ex) {
-            return null;
-        }
+        $adapter = $hybridauth->authenticate($providerIdentifier);
 
         return $adapter;
     }
