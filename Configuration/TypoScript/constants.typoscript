@@ -1,0 +1,8 @@
+# Plugin default constants
+plugin.tx_rmndhybridauth {
+    view {
+        templateRootPath = EXT:rmnd_hybridauth/Resources/Private/Templates/
+        partialRootPath = EXT:rmnd_hybridauth/Resources/Private/Partials/
+        layoutRootPath = EXT:rmnd_hybridauth/Resources/Private/Layouts/
+    }
+}

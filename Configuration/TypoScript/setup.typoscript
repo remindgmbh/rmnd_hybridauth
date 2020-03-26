@@ -1,0 +1,53 @@
+plugin.tx_rmndhybridauth {
+    view {
+
+        templateRootPaths {
+            0 = EXT:rmnd_hybridauth/Resources/Private/Templates/
+            1 = {$plugin.tx_rmndhybridauth.view.templateRootPath}
+        }
+
+        partialRootPaths {
+            0 = EXT:rmnd_hybridauth/Resources/Private/Partials/
+            1 = {$plugin.tx_rmndhybridauth.view.partialRootPath}
+        }
+
+        layoutRootPaths {
+            0 = EXT:rmnd_hybridauth/Resources/Private/Layouts/
+            1 = {$plugin.tx_rmndhybridauth.view.layoutRootPath}
+        }
+    }
+}
+
+
+
+RmndHybridauthConnect = PAGE
+
+RmndHybridauthConnect {
+
+    typeNum = 4833
+
+    config {
+        redirectOldLinksToNew = 0
+        disableAllHeaderCode = 1
+        xhtml_cleaning = 0
+        admPanel = 0
+        debug = 0
+        no_cache = 1
+    }
+
+
+    10 = USER_INT
+    10 {
+        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+        extensionName = RmndHybridauth
+        pluginName = Login
+        vendorName = Remind
+        controller = Login
+        action = Form
+        switchableControllerActions {
+            Selenium {
+                1 = auth
+            }
+        }
+    }
+}

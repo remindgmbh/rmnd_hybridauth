@@ -31,6 +31,7 @@
         "bin-dir": ".build/bin"
     },
     "require": {
+        "hybridauth/hybridauth": "^3.2.0",
         "php": "^7.2.0",
         "typo3/cms-core": "^9.5.0"
     },
@@ -46,10 +47,7 @@
         "theseer/phpdox": "^0.12.0"
     },
     "repositories": [
-        {
-            "type": "composer",
-            "url": "https://composer.remind.de/"
-        }
+
     ],
     "minimum-stability": "dev",
     "prefer-stable": true,
