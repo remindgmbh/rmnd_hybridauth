@@ -1,0 +1,12 @@
+# cat=basic/enable/010; type=boolean; label= Use Service instead of controller login (See documentation for use cases)
+useAfterAuthLoginService = 0
+
+# cat=basic/enable/020; type=boolean; label= askBeforeCreatingNewFeUser(not implemented yet)
+askBeforeCreatingNewFeUser = 0
+
+# cat=basic/enable/030; type=boolean; label= autoDisconnectHybridauthAfterLogin(not implemented yet)
+autoDisconnectHybridauthAfterLogin = 0
+
+# cat=basic/enable/040; type=boolean; label= useEmailAddressAsUsername(not implemented yet)
+useEmailAddressAsUsername = 0
+

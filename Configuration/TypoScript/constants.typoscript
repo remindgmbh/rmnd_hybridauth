@@ -5,4 +5,9 @@ plugin.tx_rmndhybridauth {
         partialRootPath = EXT:rmnd_hybridauth/Resources/Private/Partials/
         layoutRootPath = EXT:rmnd_hybridauth/Resources/Private/Layouts/
     }
+
+    # Nothing predefined here, see setup.typoscript for example configuration
+    settings {
+
+    }
 }

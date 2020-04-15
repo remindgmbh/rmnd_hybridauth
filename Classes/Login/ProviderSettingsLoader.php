@@ -26,6 +26,36 @@ class ProviderSettingsLoader
     const FIELD_HYBRIDAUTH_CONFIGURATION = 'hybridauthConfiguration';
 
     /**
+     * Where do users which are connected to provider get stored
+     * @var string
+     */
+    const FIELD_USER_PID = 'userPid';
+
+    /**
+     * Which group do new users get assigned
+     * @var string
+     */
+    const FIELD_USER_GROUP = 'userGroup';
+
+    /**
+     * Redirect to pid after login
+     * @var string
+     */
+    const FIELD_REDIRECT_PID_AFTER_LOGIN = 'redirectPidAfterLogin';
+
+    /**
+     * Redirect to pid after error
+     * @var string
+     */
+    const FIELD_REDIRECT_PID_AFTER_ERROR = 'redirectPidAfterError';
+
+    /**
+     * Update user with provider data after login
+     * @var string
+     */
+    const FIELD_IS_UPDATE_USER = 'isUserUpdateEnabled';
+
+    /**
      *
      * @param array $configuration extension typoscript settings
      * @param string $field subfield of given configuration array
@@ -57,9 +87,34 @@ class ProviderSettingsLoader
                 $provider->setHybridauthIdentifier($identifier);
             }
 
+            if(!empty($providerConfiguration[self::FIELD_USER_PID])) {
+                $pid = (int)$providerConfiguration[self::FIELD_USER_PID];
+                $provider->setUserPid($pid);
+            }
+
+            if(!empty($providerConfiguration[self::FIELD_USER_GROUP])) {
+                $group = (int)$providerConfiguration[self::FIELD_USER_GROUP];
+                $provider->setUserGroup($group);
+            }
+
+            if(!empty($providerConfiguration[self::FIELD_REDIRECT_PID_AFTER_LOGIN])) {
+                $loginSucessPid = (int)$providerConfiguration[self::FIELD_REDIRECT_PID_AFTER_LOGIN];
+                $provider->setRedirectPidAfterLogin($loginSucessPid);
+            }
+
+            if(!empty($providerConfiguration[self::FIELD_REDIRECT_PID_AFTER_ERROR])) {
+                $loginErrorPid = (int)$providerConfiguration[self::FIELD_REDIRECT_PID_AFTER_ERROR];
+                $provider->setRedirectPidAfterError($loginErrorPid);
+            }
+
             if(\is_array($providerConfiguration[self::FIELD_HYBRIDAUTH_CONFIGURATION])) {
                 $configuration = $providerConfiguration[self::FIELD_HYBRIDAUTH_CONFIGURATION];
                 $provider->setHybridauthConfiguration($configuration);
+            }
+
+            if(!empty($providerConfiguration[self::FIELD_IS_UPDATE_USER])) {
+                $isUpdateUser = (bool)$providerConfiguration[self::FIELD_IS_UPDATE_USER];
+                $provider->setIsUserUpdateEnabled($isUpdateUser);
             }
 
             $providers[$providerName] = $provider;

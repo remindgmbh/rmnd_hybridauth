@@ -1,6 +1,6 @@
 plugin.tx_rmndhybridauth {
+    # Default paths
     view {
-
         templateRootPaths {
             0 = EXT:rmnd_hybridauth/Resources/Private/Templates/
             1 = {$plugin.tx_rmndhybridauth.view.templateRootPath}
@@ -17,16 +17,59 @@ plugin.tx_rmndhybridauth {
         }
     }
 
+    # TYPO3 feature configurations
     features {
         skipDefaultArguments = 1
         requireCHashArgumentForActionArguments = 0
     }
+
+    # Example configuration
+    settings {
+
+        # Class to map received data to a user
+        userMapperClass = \Remind\LuegMeinlueg\Util\UserMapper
+
+        # Redirect to this page when error occurs while determining the provider,
+        # else the error page defined in provider settings is used
+        errorPid =
+
+        # Define the hybridauth providers that can be used for login
+        providers {
+            # Choose a unique name for the database and never change it in config
+            facebookExample {
+                # Activate provider
+                active = 0
+                # Chose a page for displaying after login
+                redirectPidAfterLogin =
+                # Chose a page for displaying after an error occurs
+                redirectPidAfterError =
+                # Save users to folder and only search here for records
+                userPid = 298
+                # Assign usergroup to new users
+                userGroup = 1
+                # Update user data from provider each login, only the ones defined in userMapper
+                isUserUpdateEnabled = 1
+
+                # HybridAuth Identifier, @see documentation for hybridauth
+                identifier = Facebook
+                # Configuration for provider @see documentation for hybridauth
+                hybridauthConfiguration {
+                    keys {
+                        id =
+                        secret =
+                    }
+                    scope {
+                        0 = email
+                        1 = user_gender
+                    }
+                }
+            }
+        }
+    }
 }
 
-
-
+# Provide a page type for connecting to provider
 RmndHybridauthConnect = PAGE
-
 RmndHybridauthConnect {
 
     typeNum = 4833
@@ -50,6 +93,7 @@ RmndHybridauthConnect {
         switchableControllerActions {
             Login {
                 0 = auth
+                1 = afterAuth
             }
         }
     }

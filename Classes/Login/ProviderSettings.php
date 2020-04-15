@@ -33,6 +33,36 @@ class ProviderSettings
 
     /**
      *
+     * @var int
+     */
+    private $userPid = 0;
+
+    /**
+     *
+     * @var int
+     */
+    private $userGroup = 0;
+
+    /**
+     *
+     * @var int
+     */
+    private $redirectPidAfterLogin = 0;
+
+    /**
+     *
+     * @var int
+     */
+    private $redirectPidAfterError = 0;
+
+    /**
+     * Update user with provider data after login
+     * @var bool
+     */
+    private $isUserUpdateEnabled = false;
+
+    /**
+     *
      * @return string
      */
     public function getName(): string
@@ -106,4 +136,101 @@ class ProviderSettings
     {
         $this->hybridauthConfiguration = $hybridauthConfiguration;
     }
+
+    /**
+     *
+     * @return int
+     */
+    public function getUserPid(): int
+    {
+        return $this->userPid;
+    }
+
+    /**
+     *
+     * @param int $userPid
+     * @return void
+     */
+    public function setUserPid(int $userPid): void
+    {
+        $this->userPid = $userPid;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function getRedirectPidAfterLogin(): int
+    {
+        return $this->redirectPidAfterLogin;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function getRedirectPidAfterError(): int
+    {
+        return $this->redirectPidAfterError;
+    }
+
+    /**
+     *
+     * @param int $redirectPidAfterLogin
+     * @return void
+     */
+    public function setRedirectPidAfterLogin(int $redirectPidAfterLogin): void
+    {
+        $this->redirectPidAfterLogin = $redirectPidAfterLogin;
+    }
+
+    /**
+     *
+     * @param int $redirectPidAfterError
+     * @return void
+     */
+    public function setRedirectPidAfterError(int $redirectPidAfterError): void
+    {
+        $this->redirectPidAfterError = $redirectPidAfterError;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function getUserGroup(): int
+    {
+        return $this->userGroup;
+    }
+
+    /**
+     *
+     * @param int $userGroup
+     * @return void
+     */
+    public function setUserGroup(int $userGroup): void
+    {
+        $this->userGroup = $userGroup;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function getIsUserUpdateEnabled(): bool
+    {
+        return $this->isUserUpdateEnabled;
+    }
+
+    /**
+     *
+     * @param bool $isUserUpdateEnabled
+     * @return void
+     */
+    public function setIsUserUpdateEnabled(bool $isUserUpdateEnabled): void
+    {
+        $this->isUserUpdateEnabled = $isUserUpdateEnabled;
+    }
+
+
 }

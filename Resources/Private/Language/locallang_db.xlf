@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2020-04-1T00:00:00Z" product-name="rmnd_hybridauth">
+		<header/>
+		<body>
+			<trans-unit id="fe_users.tab.tx_rmndhybridauth">
+				<source>Hybridauth</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_rmndhybridauth_domain_model_connections">
+				<source>Hybridauth connections</source>
+			</trans-unit>
+			<trans-unit id="tx_rmndhybridauth_domain_model_connection">
+				<source>Hybridauth connection</source>
+			</trans-unit>
+			<trans-unit id="tx_rmndhybridauth_domain_model_connection.fe_user">
+				<source>Frontend user</source>
+			</trans-unit>
+			<trans-unit id="tx_rmndhybridauth_domain_model_connection.provider">
+				<source>Hybridauth provider</source>
+			</trans-unit>
+			<trans-unit id="tx_rmndhybridauth_domain_model_connection.login_hash">
+				<source>Login hash</source>
+			</trans-unit>
+			<trans-unit id="tx_rmndhybridauth_domain_model_connection.last_validation">
+				<source>Last hybridauth connection</source>
+			</trans-unit>
+			<trans-unit id="tx_rmndhybridauth_domain_model_connection.identifier">
+				<source>Provider identifier</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2020-01-01T00:00:00Z" product-name="rmnd_hybridauth">
+		<header/>
+		<body>
+            <trans-unit id="error.user_not_created">
+                <source>Not connected to the provider or failed to create user</source>
+            </trans-unit>
+            <trans-unit id="error.login_exception">
+                <source>An error occured while connecting to the provider</source>
+            </trans-unit>
+            <trans-unit id="error.provider_not_configured">
+                <source>This provider is not configured</source>
+            </trans-unit>
+            <trans-unit id="error.typo3_login_failed">
+                <source>Connected to provider but the login failed.</source>
+            </trans-unit>
+            <trans-unit id="error.frontend_headline">
+                <source>An error occured</source>
+            </trans-unit>
+
+		</body>
+	</file>
+</xliff>
