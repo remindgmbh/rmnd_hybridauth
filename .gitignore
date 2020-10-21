@@ -1,13 +1,10 @@
 ### IDE ###
-nbproject/
-.vscode/
-.idea/
+nbproject
+.vscode
+.idea
 
 ### Composer ###
 composer.phar
-
-### Node ###
-node_modules/
 
 ### General ###
 *.log

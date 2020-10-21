@@ -9,4 +9,3 @@ autoDisconnectHybridauthAfterLogin = 0
 
 # cat=basic/enable/040; type=boolean; label= useEmailAddressAsUsername(not implemented yet)
 useEmailAddressAsUsername = 0
-
