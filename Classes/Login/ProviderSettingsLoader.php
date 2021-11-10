@@ -137,7 +137,6 @@ class ProviderSettingsLoader
         array $configuration,
         string $field = ''
     ): ProviderSettings {
-
         $providers = self::getProviderSettings($configuration, $field);
 
         /* If provider isn't configured return deactivated provider */

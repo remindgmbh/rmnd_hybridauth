@@ -48,7 +48,7 @@ class ExtensionSettingsUtility
             return false;
         }
 
-        return ((bool)$value === true);
+        return (bool)$value === true;
     }
 
     /**
@@ -64,7 +64,7 @@ class ExtensionSettingsUtility
             return false;
         }
 
-        return ((bool)$value === true);
+        return (bool)$value === true;
     }
 
     /**
@@ -80,7 +80,7 @@ class ExtensionSettingsUtility
             return false;
         }
 
-        return ((bool)$value === true);
+        return (bool)$value === true;
     }
 
     /**
@@ -96,6 +96,6 @@ class ExtensionSettingsUtility
             return false;
         }
 
-        return ((bool)$value === true);
+        return (bool)$value === true;
     }
 }

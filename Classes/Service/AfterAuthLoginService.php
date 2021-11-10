@@ -93,10 +93,8 @@ class AfterAuthLoginService extends AbstractAuthenticationService
             return null;
         }
 
-
         return $user;
     }
-
 
     /**
      * authUserFE service

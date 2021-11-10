@@ -6,7 +6,6 @@ namespace Remind\RmndHybridauth\Login;
 
 use Hybridauth\User\Profile;
 use Remind\RmndHybridauth\Domain\Model\Connection;
-use Remind\RmndHybridauth\Login\ProviderSettings;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
