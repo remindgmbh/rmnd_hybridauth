@@ -4,9 +4,9 @@ defined('TYPO3_MODE') || die;
 
 // encapsulate all locally defined variables
 (function () {
-   /**
-    * Add connection inline items to fe_users backend
-    */
+    /**
+     * Add connection inline items to fe_users backend
+     */
     $tca = [
        'tx_rmndhybridauth_domain_model_connections' => [
             'exclude' => false,

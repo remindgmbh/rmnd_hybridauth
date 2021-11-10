@@ -24,7 +24,6 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'][] = 'tx_rmn
 $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'][] = 'tx_rmndhybridauth_login[action]';
 $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'][] = 'tx_rmndhybridauth_login[connection]';
 
-
 /*******************************************************************************
  * Service Registry                                                            *
  ******************************************************************************/

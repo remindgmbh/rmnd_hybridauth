@@ -408,7 +408,6 @@ class LoginController extends ActionController
      */
     protected function getProviderSettings(): ?ProviderSettings
     {
-
         if (!$this->request->hasArgument(self::ARGUMENT_PROVIDER)) {
             return null;
         }

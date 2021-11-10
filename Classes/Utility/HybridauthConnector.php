@@ -138,7 +138,6 @@ class HybridauthConnector
         Profile $profile,
         bool $createIfNotExisting = true
     ): ?Connection {
-
         $connection = $this->getConnection($providerSettings, $profile);
         $user = null;
 
