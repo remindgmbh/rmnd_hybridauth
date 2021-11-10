@@ -1,19 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Domain\Repository;
 
 use Remind\RmndHybridauth\Domain\Model\Connection;
 use TYPO3\CMS\Extbase\Persistence\Repository;
-
-/***
- *
- * This file is part of the "REMIND - Hybridauth" Extension for TYPO3 CMS.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- *  (c) 2020 Marco Wegner <m.wegner@remind.de>
- *
- ***/
 
 /**
  * The repository for Hybridauth connections
@@ -38,7 +30,7 @@ class ConnectionRepository extends Repository
             $query->equals('identifier', $identifier),
         ];
 
-        if($pid > 0) {
+        if ($pid > 0) {
             // @todo test
             $constraints[] = $query->equals('feUser.pid', $pid);
         }

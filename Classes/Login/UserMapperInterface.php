@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Login;
 
 use Hybridauth\User\Profile;
 use Remind\RmndHybridauth\Domain\Model\Connection;
+use Remind\RmndHybridauth\Login\ProviderSettings;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * @author Marco Wegner <m.wegner@remind.de>
+ * UserMapperInterface
  */
 interface UserMapperInterface
 {
@@ -20,7 +23,7 @@ interface UserMapperInterface
 
     /**
      *
-     * @param \Remind\RmndHybridauth\Login\ProviderSettings $providerSettings
+     * @param ProviderSettings $providerSettings
      * @param Profile $profile
      * @return FrontendUser
      */
@@ -29,7 +32,7 @@ interface UserMapperInterface
     /**
      *
      * @param Connection $connection
-     * @param \Remind\RmndHybridauth\Login\ProviderSettings $providerSettings
+     * @param ProviderSettings $providerSettings
      * @param Profile $profile
      * @return void
      */

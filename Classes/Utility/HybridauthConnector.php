@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Utility;
 
 use Exception;
 use Hybridauth\Hybridauth;
+use Hybridauth\User\Profile;
 use Remind\RmndHybridauth\Domain\Model\Connection;
 use Remind\RmndHybridauth\Domain\Repository\ConnectionRepository;
 use Remind\RmndHybridauth\Login\ProviderSettings;
@@ -16,7 +19,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 /**
  * Connect with hybridauth to providers and create and connect to fe_users
  *
- * @author Marco Wegner <m.wegner@remind.de>
+ * @todo maybe use dependency injection
+ * @todo check visibility on class members
  */
 class HybridauthConnector
 {
@@ -24,29 +28,32 @@ class HybridauthConnector
      *
      * @var UserMapperInterface
      */
-    private $userMapper = null;
+    private ?UserMapperInterface $userMapper = null;
+
     /**
      *
      * @var ConnectionRepository
      */
-    private $connectionRepository = null;
+    private ?ConnectionRepository $connectionRepository = null;
 
     /**
      *
      * @var ObjectManager
      */
-    private $objectManager = null;
+    private ?ObjectManager $objectManager = null;
 
     /**
      *
      * @var PersistenceManager
      */
-    private $persistenceManager = null;
+    private ?PersistenceManager $persistenceManager = null;
 
     /**
      * Init repositories and persistenceManager
      *
      * @todo maybe use traits or stuff
+     *
+     * @param UserMapperInterface $userMapper
      */
     public function __construct(UserMapperInterface $userMapper)
     {
@@ -56,15 +63,13 @@ class HybridauthConnector
         $this->userMapper = $userMapper;
     }
 
-
     /**
      *
      * @param ProviderSettings $providerSettings
      * @param string $callback
-     * @return FrontendUser|null
+     * @return Connection
      */
-
-    public function connect(ProviderSettings $providerSettings, string $callback): ?Connection
+    public function connect(ProviderSettings $providerSettings, string $callback): Connection
     {
         $providerIdentifier = $providerSettings->getHybridauthIdentifier();
         $providerConfig = $providerSettings->getHybridauthConfiguration();
@@ -77,7 +82,7 @@ class HybridauthConnector
             ]
         ];
 
-        $hybridauth = new Hybridauth( $config );
+        $hybridauth = new Hybridauth($config);
 
         /*
          * This will redirect the user to the provider (eg facebook) page on first call.
@@ -92,7 +97,7 @@ class HybridauthConnector
         $connection = $this->getConnectionWithUser($providerSettings, $profile, true);
 
         /* Update lastValidation field (needed for hashLogin) */
-        $connection->setLastValidation(\time());
+        $connection->setLastValidation(time());
         $this->connectionRepository->update($connection);
         $this->persistenceManager->persistAll();
 
@@ -102,15 +107,14 @@ class HybridauthConnector
     /**
      *
      * @param ProviderSettings $providerSettings
-     * @param \Hybridauth\User\Profile $profile
-     * @param bool $createIfNotExisting
+     * @param Profile $profile
      * @return Connection|null
      * @throws Exception
      */
-    protected function getConnection(ProviderSettings $providerSettings, \Hybridauth\User\Profile $profile): ?Connection
+    protected function getConnection(ProviderSettings $providerSettings, Profile $profile): ?Connection
     {
         /* Absolutely needed, not sure if this even can happen */
-        if(empty($profile->identifier)) {
+        if (empty($profile->identifier)) {
             throw new Exception('Profile loaded but identifier is empty.');
         }
 
@@ -124,37 +128,39 @@ class HybridauthConnector
     /**
      *
      * @param ProviderSettings $providerSettings
-     * @param \Hybridauth\User\Profile $profile
-     * @param int $pid
+     * @param Profile $profile
      * @param bool $createIfNotExisting
-     * @return FrontendUser|null
+     * @return Connection|null
      * @throws Exception
      */
-    protected function getConnectionWithUser(ProviderSettings $providerSettings, \Hybridauth\User\Profile $profile, bool $createIfNotExisting = true): Connection
-    {
+    protected function getConnectionWithUser(
+        ProviderSettings $providerSettings,
+        Profile $profile,
+        bool $createIfNotExisting = true
+    ): ?Connection {
+
         $connection = $this->getConnection($providerSettings, $profile);
         $user = null;
 
-        if(!empty($connection) && !empty($connection->getFeUser())) {
+        if (!empty($connection) && !empty($connection->getFeUser())) {
             $this->updateUser($connection, $providerSettings, $profile);
             return $connection;
         }
 
-        if(!$createIfNotExisting) {
+        if (!$createIfNotExisting) {
             return null;
         }
 
         /* Connection exists but user was moved or deleted */
-        if(!empty($connection) && empty($connection->getFeUser())) {
-            /*
-             * Create new user and add existing connection.
-             */
+        if (!empty($connection) && empty($connection->getFeUser())) {
+            /* Create new user and add existing connection. */
             $user = $this->createUser($providerSettings, $profile);
             $connection->setFeUser($user);
 
             $this->connectionRepository->update($connection);
 
             $this->persistenceManager->persistAll();
+
             return $connection;
         }
 
@@ -170,11 +176,14 @@ class HybridauthConnector
      *
      * @param ProviderSettings $providerSettings
      * @param FrontendUser $user
-     * @param \Hybridauth\User\Profile $profile
+     * @param Profile $profile
      * @return Connection
      */
-    protected function createConnection(ProviderSettings $providerSettings, FrontendUser $user, \Hybridauth\User\Profile $profile): Connection
-    {
+    protected function createConnection(
+        ProviderSettings $providerSettings,
+        FrontendUser $user,
+        Profile $profile
+    ): Connection {
         $connection = new Connection();
         $connection->setFeUser($user);
         $connection->setProvider($providerSettings->getName());
@@ -188,12 +197,12 @@ class HybridauthConnector
     }
 
     /**
-     * @param string $provider
-     * @param \Hybridauth\User\Profile $profile
-     * @param bool $pid
+     *
+     * @param ProviderSettings $providerSettings
+     * @param Profile $profile
      * @return FrontendUser
      */
-    protected function createUser(ProviderSettings $providerSettings, \Hybridauth\User\Profile $profile): FrontendUser
+    protected function createUser(ProviderSettings $providerSettings, Profile $profile): FrontendUser
     {
         $frontendUser = $this->userMapper->createUser($providerSettings, $profile);
         $this->persistenceManager->persistAll();
@@ -205,12 +214,12 @@ class HybridauthConnector
      *
      * @param Connection $connection
      * @param ProviderSettings $providerSettings
-     * @param \Hybridauth\User\Profile $profile
+     * @param Profile $profile
      * @return void
      */
-    protected function updateUser(\Remind\RmndHybridauth\Domain\Model\Connection $connection, ProviderSettings $providerSettings, \Hybridauth\User\Profile $profile): void
+    protected function updateUser(Connection $connection, ProviderSettings $providerSettings, Profile $profile): void
     {
-        if(!$providerSettings->getIsUserUpdateEnabled()) {
+        if (!$providerSettings->getIsUserUpdateEnabled()) {
             return;
         }
 
@@ -218,23 +227,20 @@ class HybridauthConnector
         $this->persistenceManager->persistAll();
     }
 
-
-
     /**
      *
      * @param string $provider
-     * @param \Hybridauth\User\Profile $profile
-     * @param bool $pid
-     * @return FrontendUser
+     * @param Profile $profile
+     * @return Connection
      */
-    protected function createConnectionWithUser(ProviderSettings $providerSettings, \Hybridauth\User\Profile $profile): Connection
+    protected function createConnectionWithUser(ProviderSettings $providerSettings, Profile $profile): Connection
     {
         /* Create user */
         $frontendUser = $this->createUser($providerSettings, $profile);
+
         /* Create connection for frontend user */
         $connection = $this->createConnection($providerSettings, $frontendUser, $profile);
 
         return $connection;
     }
-
 }

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Utility;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * @author Marco Wegner <m.wegner@remind.de>
+ * ExtensionSettingsUtility
  */
 class ExtensionSettingsUtility
 {
@@ -14,10 +16,11 @@ class ExtensionSettingsUtility
      * Key for receiving extension settings
      * @var string
      */
-    const EXTENSTION_KEY = 'rmnd_hybridauth';
+    public const EXTENSTION_KEY = 'rmnd_hybridauth';
 
     /**
      * @todo is this needed
+     *
      * @return array
      */
     public static function getSettings(): array
@@ -25,7 +28,7 @@ class ExtensionSettingsUtility
         $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class)
             ->get(self::EXTENSTION_KEY);
 
-        if(!\is_array($configuration)) {
+        if (!is_array($configuration)) {
             return [];
         }
 
@@ -41,7 +44,7 @@ class ExtensionSettingsUtility
         $value = GeneralUtility::makeInstance(ExtensionConfiguration::class)
             ->get(self::EXTENSTION_KEY, 'askBeforeCreatingNewFeUser');
 
-        if(empty($value)) {
+        if (empty($value)) {
             return false;
         }
 
@@ -57,7 +60,7 @@ class ExtensionSettingsUtility
         $value = GeneralUtility::makeInstance(ExtensionConfiguration::class)
             ->get(self::EXTENSTION_KEY, 'autoDisconnectHybridauthAfterLogin');
 
-        if(empty($value)) {
+        if (empty($value)) {
             return false;
         }
 
@@ -73,7 +76,7 @@ class ExtensionSettingsUtility
         $value = GeneralUtility::makeInstance(ExtensionConfiguration::class)
             ->get(self::EXTENSTION_KEY, 'useEmailAddressAsUsername');
 
-        if(empty($value)) {
+        if (empty($value)) {
             return false;
         }
 
@@ -89,7 +92,7 @@ class ExtensionSettingsUtility
         $value = GeneralUtility::makeInstance(ExtensionConfiguration::class)
             ->get(self::EXTENSTION_KEY, 'useAfterAuthLoginService');
 
-        if(empty($value)) {
+        if (empty($value)) {
             return false;
         }
 

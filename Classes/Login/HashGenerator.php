@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Login;
 
 /**
- * @author Marco Wegner <m.wegner@remind.de>
+ * HashGenerator
  */
 class HashGenerator
 {
@@ -17,7 +19,6 @@ class HashGenerator
     {
         return $ip . '-' . $token;
     }
-
 
     /**
      *
@@ -44,17 +45,18 @@ class HashGenerator
     public static function isValidLogin(string $ip, string $token, $hash): bool
     {
         $loginKey = self::buildLoginKey($ip, $token);
-        return \password_verify($loginKey, $hash);
+        return password_verify($loginKey, $hash);
     }
 
     /**
+     * Requires PHP compilation with --with-openssl
      *
      * @param int $length
      * @return string
      */
     public static function generateRandomHash(int $length): string
     {
-        $hash = \substr(\md5(\openssl_random_pseudo_bytes(20)), -$length);
+        $hash = substr(md5(openssl_random_pseudo_bytes(20)), -$length);
         return $hash;
     }
 
@@ -66,7 +68,7 @@ class HashGenerator
     public static function generateHash(string $text): string
     {
         /* PHP7.2 */
-        $hash = \password_hash($text, \PASSWORD_ARGON2I);
+        $hash = password_hash($text, PASSWORD_ARGON2I);
 
         return $hash;
     }

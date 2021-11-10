@@ -1,5 +1,6 @@
 <?php
-defined('TYPO3_MODE') || die();
+
+defined('TYPO3_MODE') || die;
 
 /*******************************************************************************
  * Plugin Configuration                                                        *
@@ -29,7 +30,7 @@ $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'][] = 'tx_rmn
  ******************************************************************************/
 
 /* Only use service if option is activated in the extension settings */
-if(\Remind\RmndHybridauth\Utility\ExtensionSettingsUtility::isUseAfterAuthLoginService()) {
+if (\Remind\RmndHybridauth\Utility\ExtensionSettingsUtility::isUseAfterAuthLoginService()) {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
         'rmnd_hybridauth',
         'auth',
@@ -47,11 +48,3 @@ if(\Remind\RmndHybridauth\Utility\ExtensionSettingsUtility::isUseAfterAuthLoginS
         ]
     );
 }
-
-/*******************************************************************************
- * encapsulate locally defined variables                                   *
- ******************************************************************************/
-
-(function () {
-
-})();

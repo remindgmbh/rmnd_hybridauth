@@ -1,4 +1,5 @@
 <?php
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:rmnd_hybridauth/Resources/Private/Language/locallang_db.xlf:tx_rmndhybridauth_domain_model_connection',

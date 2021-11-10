@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Login;
 
 use Hybridauth\User\Profile;
@@ -11,7 +13,9 @@ use TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * @author Marco Wegner <m.wegner@remind.de>
+ * BaseUserMapper
+ *
+ * @todo maybe use dependency injection
  */
 class BaseUserMapper implements UserMapperInterface
 {
@@ -19,19 +23,19 @@ class BaseUserMapper implements UserMapperInterface
      *
      * @var ObjectManager
      */
-    protected $objectManager = null;
+    protected ?ObjectManager $objectManager = null;
 
     /**
      *
      * @var FrontendUserRepository
      */
-    protected $frontendUserRepository = null;
+    protected ?FrontendUserRepository $frontendUserRepository = null;
 
     /**
      *
      * @var FrontendUserGroupRepository
      */
-    protected $frontendUserGroupRepository = null;
+    protected ?FrontendUserGroupRepository $frontendUserGroupRepository = null;
 
     /**
      *
@@ -72,9 +76,13 @@ class BaseUserMapper implements UserMapperInterface
      * @param Profile $profile
      * @return void
      */
-    protected function updateBaseUserInformation(FrontendUser $frontendUser, ProviderSettings $providerSettings, Profile $profile): void
-    {
-        /*
+    protected function updateBaseUserInformation(
+        FrontendUser $frontendUser,
+        ProviderSettings $providerSettings,
+        Profile $profile
+    ): void {
+
+        /**
          * @todo optional(ts) use email as username if no other user with adress exists
          */
         $frontendUser->setUsername($providerSettings->getName() . '-' . $profile->identifier);
@@ -86,7 +94,8 @@ class BaseUserMapper implements UserMapperInterface
 
         $frontendUser->setPid($providerSettings->getUserPid());
         $usergroup = $this->getFrontendUserGroup($providerSettings->getUserGroup());
-        if(!empty($usergroup) && !$frontendUser->getUsergroup()->contains($usergroup)) {
+
+        if (!empty($usergroup) && !$frontendUser->getUsergroup()->contains($usergroup)) {
             $frontendUser->addUsergroup($usergroup);
         }
     }
@@ -106,6 +115,7 @@ class BaseUserMapper implements UserMapperInterface
     {
         /* Only update email */
         $connection->getFeUser()->setEmail($profile->emailVerified);
+
         $this->frontendUserRepository->update($connection->getFeUser());
     }
 
@@ -116,20 +126,18 @@ class BaseUserMapper implements UserMapperInterface
      */
     protected function getFrontendUserGroup(int $uid): ?FrontendUserGroup
     {
-        $usergroup = $this->frontendUserGroupRepository->findByUid($uid);
-        return $usergroup;
+        return $this->frontendUserGroupRepository->findByUid($uid);
     }
 
     /**
      * Generate random password for newly created users. Not hashed or whatsoever.
+     *
      * @todo hash password or make sure user can never be logged in with this password.
+     *
      * @return string
      */
     protected function generateRandomPassword(): string
     {
-        $pass = \substr(\md5(\openssl_random_pseudo_bytes(20)), -50);
-        return $pass;
+        return substr(md5(openssl_random_pseudo_bytes(20)), -50);
     }
-
-
 }

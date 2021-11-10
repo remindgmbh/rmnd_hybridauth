@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Login;
 
 /**
- * @author Marco Wegner <m.wegner@remind.de>
+ * ProviderSettings
  */
 class ProviderSettings
 {
@@ -11,55 +13,55 @@ class ProviderSettings
      * Name in typoscript settings
      * @var string
      */
-    private $name = '';
+    private string $name = '';
 
     /**
      * Is provider configured
      * @var bool
      */
-    private $isActive = false;
+    private bool $isActive = false;
 
     /**
      * Name to load provider from hybridauth
      * @var string
      */
-    private $hybridauthIdentifier = '';
+    private string $hybridauthIdentifier = '';
 
     /**
      *
      * @var array
      */
-    private $hybridauthConfiguration = [];
+    private array $hybridauthConfiguration = [];
 
     /**
      *
      * @var int
      */
-    private $userPid = 0;
+    private int $userPid = 0;
 
     /**
      *
      * @var int
      */
-    private $userGroup = 0;
+    private int $userGroup = 0;
 
     /**
      *
      * @var int
      */
-    private $redirectPidAfterLogin = 0;
+    private int $redirectPidAfterLogin = 0;
 
     /**
      *
      * @var int
      */
-    private $redirectPidAfterError = 0;
+    private int $redirectPidAfterError = 0;
 
     /**
      * Update user with provider data after login
      * @var bool
      */
-    private $isUserUpdateEnabled = false;
+    private bool $isUserUpdateEnabled = false;
 
     /**
      *
@@ -231,6 +233,4 @@ class ProviderSettings
     {
         $this->isUserUpdateEnabled = $isUserUpdateEnabled;
     }
-
-
 }

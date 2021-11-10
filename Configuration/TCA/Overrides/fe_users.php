@@ -1,5 +1,6 @@
 <?php
-defined('TYPO3_MODE') || die();
+
+defined('TYPO3_MODE') || die;
 
 // encapsulate all locally defined variables
 (function () {
@@ -25,8 +26,8 @@ defined('TYPO3_MODE') || die();
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users', $tca);
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
-       'fe_users',
-       '--div--;LLL:EXT:rmnd_hybridauth/Resources/Private/Language/locallang_db.xlf:fe_users.tab.tx_rmndhybridauth, '
+        'fe_users',
+        '--div--;LLL:EXT:rmnd_hybridauth/Resources/Private/Language/locallang_db.xlf:fe_users.tab.tx_rmndhybridauth, '
         . 'tx_rmndhybridauth_domain_model_connections'
     );
 })();

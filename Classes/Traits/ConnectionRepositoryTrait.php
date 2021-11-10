@@ -1,11 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Traits;
 
 use Remind\RmndHybridauth\Domain\Repository\ConnectionRepository;
 
-
 /**
- * @author Marco Wegner <m.wegner@remind.de>
+ * ConnectionRepositoryTrait
+ *
+ * @todo naming is inconsistent; should be ConnectionRepositoryInjectionTrait
  */
 trait ConnectionRepositoryTrait
 {
@@ -13,7 +17,7 @@ trait ConnectionRepositoryTrait
      *
      * @var ConnectionRepository
      */
-    protected $connectionRepository = null;
+    protected ?ConnectionRepository $connectionRepository = null;
 
     /**
      * Symfony auto injection

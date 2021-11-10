@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Service;
 
 use Remind\RmndHybridauth\Controller\LoginController;
@@ -16,42 +18,48 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
- * @author Marco Wegner <m.wegner@remind.de>
+ * AfterAuthLoginService
  */
 class AfterAuthLoginService extends AbstractAuthenticationService
 {
-
     /**
      * Time that a login hash is valid
+     *
+     * @todo check visibility or change to const
+     *
      * @var int
      */
-    const LOGIN_HASH_EXPIRATION_TIME = 60;
+    public const LOGIN_HASH_EXPIRATION_TIME = 60;
 
     /**
      * Keeps class name.
      *
+     * @todo check visibility or change to const
+     *
      * @var string
      */
-    public $prefixId = 'tx_rmndhybridauth_authed';
+    public string $prefixId = 'tx_rmndhybridauth_authed';
 
     /**
      * Keeps extension key.
      *
+     * @todo check visibility or change to const
+     *
      * @var string
      */
-    public $extKey = 'rmnd_hybridauth';
+    public string $extKey = 'rmnd_hybridauth';
 
     /**
      *
      * @var ObjectManager
      */
-    protected $objectManager = null;
+    protected ?ObjectManager $objectManager = null;
 
     /**
      *
      * @var ConnectionRepository
      */
-    protected $connectionRepository = null;
+    protected ?ConnectionRepository $connectionRepository = null;
 
     /**
      * Init functions
@@ -67,6 +75,8 @@ class AfterAuthLoginService extends AbstractAuthenticationService
 
     /**
      * called in service getUserFE, user has still to be authed.
+     *
+     * @todo maybe change return type to empty array
      *
      * @return array|null User or null
      */
@@ -92,6 +102,9 @@ class AfterAuthLoginService extends AbstractAuthenticationService
      * authUserFE service
      * 100 try with other services
      * 200 = authed
+     *
+     * @todo maybe change param type to array only
+     *
      * @param array|null $user
      * @return int
      */
@@ -114,6 +127,7 @@ class AfterAuthLoginService extends AbstractAuthenticationService
 
     /**
      * Check if imported user
+     *
      * @param array $loginData
      * @return array UserArray
      */
@@ -121,19 +135,19 @@ class AfterAuthLoginService extends AbstractAuthenticationService
     {
         $connection = $this->getConnectionFromArguments();
 
-        if(empty($connection)) {
+        if (empty($connection)) {
             return [];
         }
 
         $feUser = $connection->getFeUser();
 
-        if(empty($feUser)) {
+        if (empty($feUser)) {
             return [];
         }
 
         $user = $this->getRawFeUser($feUser);
 
-        if(empty($user)) {
+        if (empty($user)) {
             return [];
         }
 
@@ -142,23 +156,26 @@ class AfterAuthLoginService extends AbstractAuthenticationService
 
     /**
      *
-     * @return array
+     * @todo return type is inconsistent; should be 'null' instead of '[]'
+     *
+     * @return mixed
      */
-    protected function getConnectionFromArguments(): ?Connection
+    protected function getConnectionFromArguments()
     {
         /* Get rmnd_hybridauth login plugin arguments */
         $arguments = GeneralUtility::_GP('tx_rmndhybridauth_login');
-        if(empty($arguments)) {
+
+        if (empty($arguments)) {
             return [];
         }
 
         /* Check if connection exists */
-        if(empty($arguments[LoginController::ARGUMENT_CONNECTION_UID])) {
+        if (empty($arguments[LoginController::ARGUMENT_CONNECTION_UID])) {
             return [];
         }
 
         /* Check if login token is given */
-        if(empty($arguments[LoginController::ARGUMENT_LOGIN_TOKEN])) {
+        if (empty($arguments[LoginController::ARGUMENT_LOGIN_TOKEN])) {
             return [];
         }
 
@@ -182,12 +199,12 @@ class AfterAuthLoginService extends AbstractAuthenticationService
         /* Get rmnd_hybridauth login plugin arguments */
         $arguments = GeneralUtility::_GP('tx_rmndhybridauth_login');
 
-        if(empty($arguments)) {
+        if (empty($arguments)) {
             return '';
         }
 
         /* Check if connection exists */
-        if(empty($arguments[LoginController::ARGUMENT_LOGIN_TOKEN])) {
+        if (empty($arguments[LoginController::ARGUMENT_LOGIN_TOKEN])) {
             return '';
         }
 
@@ -203,24 +220,25 @@ class AfterAuthLoginService extends AbstractAuthenticationService
         $loginToken = $this->getLoginTokenFromArguments();
         $connection = $this->getConnectionFromArguments();
 
-        if(empty($connection)) {
+        if (empty($connection)) {
             return false;
         }
 
         $ip = GeneralUtility::getIndpEnv('REMOTE_ADDR');
 
+        // @todo why the brackets?
         /* Validate hash */
         $loginHashMatching = (HashGenerator::isValidLogin(
             $ip,
             $loginToken,
-            $connection->getLoginHash())
-        );
+            $connection->getLoginHash()
+        ));
 
-        $isHashExpired = (\time() > ($connection->getLastValidation() + self::LOGIN_HASH_EXPIRATION_TIME));
+        $isHashExpired = (time() > ($connection->getLastValidation() + self::LOGIN_HASH_EXPIRATION_TIME));
 
         $isValid = ($loginHashMatching && !$isHashExpired);
 
-        if($isValid) {
+        if ($isValid) {
             /* Only one login possible, after that invalidate login hash */
             $this->invalidateLoginHash($connection);
         }
@@ -257,7 +275,7 @@ class AfterAuthLoginService extends AbstractAuthenticationService
         $mappedConnections = $dataMapper->map(Connection::class, [$rawData]);
 
         /* Mapping failed */
-        if(empty($mappedConnections)) {
+        if (empty($mappedConnections)) {
             return null;
         }
 
@@ -294,7 +312,7 @@ class AfterAuthLoginService extends AbstractAuthenticationService
         $user = $feUserResult->fetch();
 
         /* May be null */
-        if(empty($user)) {
+        if (empty($user)) {
             return [];
         }
 

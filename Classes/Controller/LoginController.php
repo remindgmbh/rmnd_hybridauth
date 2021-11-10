@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Remind\RmndHybridauth\Controller;
 
 use Exception;
@@ -23,7 +25,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
- * @author Marco Wegner <m.wegner@remind.de>
+ * LoginController
  */
 class LoginController extends ActionController
 {
@@ -36,55 +38,59 @@ class LoginController extends ActionController
      * Action argument with selected provider
      * @var string
      */
-    const ARGUMENT_PROVIDER = 'provider';
+    public const ARGUMENT_PROVIDER = 'provider';
 
     /**
      * Login token argument for fe_login
      * @var string
      */
-    const ARGUMENT_LOGIN_TOKEN = 'token';
+    public const ARGUMENT_LOGIN_TOKEN = 'token';
 
     /**
      * connection uid argument for fe_login
      * @var string
      */
-    const ARGUMENT_CONNECTION_UID = 'connection';
+    public const ARGUMENT_CONNECTION_UID = 'connection';
 
     /**
      * TypoScript object with provider settings
      * @var string
      */
-    const SETTINGS_PROVIDERS = 'providers';
+    public const SETTINGS_PROVIDERS = 'providers';
 
     /**
      * TypoScript setting for error page (only used when no provider selected)
      * @var string
      */
-    const SETTINGS_ERROR_PID = 'errorPid';
+    public const SETTINGS_ERROR_PID = 'errorPid';
 
     /**
      * Class which maps provider information to fe_users
      * @var string
      */
-    const SETTINGS_USER_MAPPER_CLASS = 'userMapperClass';
+    public const SETTINGS_USER_MAPPER_CLASS = 'userMapperClass';
 
     /**
      * @var string
      */
-    const TRANSLATION_FILE = 'LLL:EXT:rmnd_hybridauth/Resources/Private/Language/locallang.xlf:';
+    public const TRANSLATION_FILE = 'LLL:EXT:rmnd_hybridauth/Resources/Private/Language/locallang.xlf:';
 
     /**
      * Authenticate with given provider
+     *
      * @return void
      */
     public function authAction(): void
     {
         $providerSettings = $this->getProviderSettings();
-        $errorPid = (int)$this->settings[self::SETTINGS_ERROR_PID];
+        $errorPid = (int) $this->settings[self::SETTINGS_ERROR_PID];
 
-        if($providerSettings === null) {
+        if ($providerSettings === null) {
             $this->addFlashMessage(
-                LocalizationUtility::translate(self::TRANSLATION_FILE . 'error.provider_not_configured', 'rmnd_hybridauth'),
+                LocalizationUtility::translate(
+                    self::TRANSLATION_FILE . 'error.provider_not_configured',
+                    'rmnd_hybridauth'
+                ),
                 '',
                 AbstractMessage::ERROR
             );
@@ -94,12 +100,20 @@ class LoginController extends ActionController
 
         $loggedIn = $this->login($providerSettings);
 
-        if(!$loggedIn) {
+        if (!$loggedIn) {
             $errorPidRedirect = $providerSettings->getRedirectPidAfterError() ?? $errorPid;
             $this->redirect('authError', null, null, $this->getAfterLoginArguments(), $errorPidRedirect, 0, 303);
         }
 
-        $this->redirect('loginComplete', null, null, $this->getAfterLoginArguments(), $providerSettings->getRedirectPidAfterLogin(), 0, 303);
+        $this->redirect(
+            'loginComplete',
+            null,
+            null,
+            $this->getAfterLoginArguments(),
+            $providerSettings->getRedirectPidAfterLogin(),
+            0,
+            303
+        );
     }
 
     /**
@@ -120,9 +134,12 @@ class LoginController extends ActionController
             /* Try connecting by redirecting when not already connected */
             $connection = $hybridauthConnector->connect($providerSettings, $callbackUrl);
 
-            if(empty($connection)) {
+            if (empty($connection)) {
                 $this->addFlashMessage(
-                    LocalizationUtility::translate(self::TRANSLATION_FILE . 'error.user_not_created', 'rmnd_hybridauth'),
+                    LocalizationUtility::translate(
+                        self::TRANSLATION_FILE . 'error.user_not_created',
+                        'rmnd_hybridauth'
+                    ),
                     '',
                     AbstractMessage::ERROR
                 );
@@ -137,7 +154,7 @@ class LoginController extends ActionController
             /* Use loginService or directly login in controller */
             $isUseLoginService = ExtensionSettingsUtility::isUseAfterAuthLoginService();
 
-            if($isUseLoginService) {
+            if ($isUseLoginService) {
                 /* Create auth token and redirect to current page but with another action */
                 $this->redirectToAfterAuthUri($connection, $providerSettings);
                 return true;
@@ -145,7 +162,6 @@ class LoginController extends ActionController
 
             /* Login service is not activated, so directly login user here (dirty method) */
             $isLoggedIn = $this->loginUser($connection->getFeUser());
-
         } catch (Exception $ex) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(self::TRANSLATION_FILE . 'error.login_exception', 'rmnd_hybridauth'),
@@ -156,7 +172,7 @@ class LoginController extends ActionController
             return false;
         }
 
-        if(!$isLoggedIn) {
+        if (!$isLoggedIn) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(self::TRANSLATION_FILE . 'error.typo3_login_failed', 'rmnd_hybridauth'),
                 '',
@@ -173,7 +189,7 @@ class LoginController extends ActionController
      */
     protected function getUserMapper(): UserMapperInterface
     {
-        if(empty($this->settings[self::SETTINGS_USER_MAPPER_CLASS])) {
+        if (empty($this->settings[self::SETTINGS_USER_MAPPER_CLASS])) {
             return new BaseUserMapper($this->objectManager);
         }
 
@@ -209,7 +225,8 @@ class LoginController extends ActionController
 
         /* Redirect, so the auth service kicks in and logs in user */
         HttpUtility::redirect(
-            $redirectUri, HttpUtility::HTTP_STATUS_303
+            $redirectUri,
+            HttpUtility::HTTP_STATUS_303
         );
     }
 
@@ -232,7 +249,7 @@ class LoginController extends ActionController
 
         $userData = $tsfe->fe_user->fetchUserRecord($info['db_user'], $user->getUsername(), $extraWhere);
 
-        if(empty($userData)) {
+        if (empty($userData)) {
             return false;
         }
 
@@ -306,15 +323,16 @@ class LoginController extends ActionController
     {
         /* @var $tsfe TypoScriptFrontendController */
         $tsfe = $GLOBALS['TSFE'];
-        if(empty($tsfe)) {
+
+        if (empty($tsfe)) {
             return false;
         }
 
-        if(empty($tsfe->fe_user)) {
+        if (empty($tsfe->fe_user)) {
             return false;
         }
 
-        if(empty($tsfe->fe_user->user)) {
+        if (empty($tsfe->fe_user->user)) {
             return false;
         }
 
@@ -331,9 +349,12 @@ class LoginController extends ActionController
         $providerSettings = $this->getProviderSettings();
         $errorPid = (int)$this->settings[self::SETTINGS_ERROR_PID];
 
-        if($providerSettings === null) {
+        if ($providerSettings === null) {
             $this->addFlashMessage(
-                LocalizationUtility::translate(self::TRANSLATION_FILE . 'error.provider_not_configured', 'rmnd_hybridauth'),
+                LocalizationUtility::translate(
+                    self::TRANSLATION_FILE . 'error.provider_not_configured',
+                    'rmnd_hybridauth'
+                ),
                 '',
                 AbstractMessage::ERROR
             );
@@ -341,8 +362,7 @@ class LoginController extends ActionController
             $this->redirect('authError', null, null, $this->getAfterLoginArguments(), $errorPid, 0, 303);
         }
 
-        if(!$loggedIn) {
-
+        if (!$loggedIn) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(self::TRANSLATION_FILE . 'error.typo3_login_failed', 'rmnd_hybridauth'),
                 '',
@@ -353,7 +373,15 @@ class LoginController extends ActionController
             $this->redirect('authError', null, null, $this->getAfterLoginArguments(), $errorPidRedirect, 0, 303);
         }
 
-        $this->redirect('loginComplete', null, null, $this->getAfterLoginArguments(), $providerSettings->getRedirectPidAfterLogin(), 0, 303);
+        $this->redirect(
+            'loginComplete',
+            null,
+            null,
+            $this->getAfterLoginArguments(),
+            $providerSettings->getRedirectPidAfterLogin(),
+            0,
+            303
+        );
     }
 
     /**
@@ -381,20 +409,24 @@ class LoginController extends ActionController
     protected function getProviderSettings(): ?ProviderSettings
     {
 
-        if(!$this->request->hasArgument(self::ARGUMENT_PROVIDER)) {
+        if (!$this->request->hasArgument(self::ARGUMENT_PROVIDER)) {
             return null;
         }
 
         $argumentProvider = $this->request->getArgument(self::ARGUMENT_PROVIDER);
 
-        if(!\is_string($argumentProvider) || empty($argumentProvider)) {
+        if (!is_string($argumentProvider) || empty($argumentProvider)) {
             return null;
         }
 
-        $provider = ProviderSettingsLoader::getSingleProviderSettings($argumentProvider, $this->settings, self::SETTINGS_PROVIDERS);
+        $provider = ProviderSettingsLoader::getSingleProviderSettings(
+            $argumentProvider,
+            $this->settings,
+            self::SETTINGS_PROVIDERS
+        );
 
         /* Return null if provider is not active */
-        if(!$provider->getIsActive()) {
+        if (!$provider->getIsActive()) {
             return null;
         }
 
@@ -409,11 +441,11 @@ class LoginController extends ActionController
     {
         $arguments = [];
 
-        if($this->request->hasArgument(self::ARGUMENT_PROVIDER)) {
+        if ($this->request->hasArgument(self::ARGUMENT_PROVIDER)) {
             $arguments[self::ARGUMENT_PROVIDER] = $this->request->getArgument(self::ARGUMENT_PROVIDER);
         }
 
-        if($this->request->hasArgument(self::ARGUMENT_CONNECTION_UID)) {
+        if ($this->request->hasArgument(self::ARGUMENT_CONNECTION_UID)) {
             $arguments[self::ARGUMENT_CONNECTION_UID] = $this->request->getArgument(self::ARGUMENT_CONNECTION_UID);
         }
 
